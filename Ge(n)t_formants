@@ -1,0 +1,112 @@
+inputFolder <- "example" #your textgrid folder, use this symbol / with this orientation for the path
+inputFolder2 <- "example2"
+listFiles <- list.files(path = inputFolder, pattern = "\\.TextGrid$" , ignore.case = TRUE)
+listFiles2 <- list.files(path = inputFolder2, pattern = "\\.Formant$", ignore.case = TRUE)
+tabr <- data.frame(file = listFiles) 
+tabr$variety <- NA #customise the table as you wish
+tabr$speaker <-NA
+tabr$firstf1 <- NA
+tabr$secondf1 <- NA
+tabr$thirdf1 <- NA
+tabr$fourthf1 <- NA
+tabr$fifthf1 <- NA
+tabr$sixthf1 <- NA
+tabr$seventhf1 <- NA
+tabr$eightf1 <- NA
+tabr$ninethf1 <- NA
+tabr$tenthf1 <-NA
+tabr$firstf2 <- NA
+tabr$secondf2 <- NA
+tabr$thirdf2 <- NA
+tabr$fourthf2 <- NA
+tabr$fifthf2 <- NA
+tabr$sixthf2 <- NA
+tabr$seventhf2 <- NA
+tabr$eighthf2 <- NA
+tabr$ninethf2 <- NA
+tabr$tenthf2 <-NA
+
+
+
+for (I in seq_along(listFiles)) {  
+    file <- listFiles[I] 
+    fileName <- substr(file, 1, nchar(file) - nchar(".TextGrid"))
+    fileTextGrid <- paste0(inputFolder, "/", fileName, ".TextGrid")
+    tg <- tg.read(fileTextGrid)
+    t0 <- tg.getIntervalStartTime(tg, "fonemi", index = 3) #change the number according to the number of the interval
+    tf <- tg.getIntervalEndTime(tg, "fonemi", index = 3) #same
+    deltat <- tf - t0
+    equi <- deltat/10  #change the number accordingly to the numbers of frame you want to extract
+     for (I in seq_along(listFiles2)) {
+       file2 <-listFiles2[I]
+       fileName2 <- substr(file2, 1, nchar(file2) - nchar(".Formant"))
+       fileFormant <-paste0(inputFolder2, "/", fileName2, ".Formant")
+       if (fileName == fileName2) {
+        f <- formant.read (fileFormant)
+        n1<-formant.getPointIndexNearestTime(f, t0)
+        n2<-formant.getPointIndexNearestTime(f, t0+equi)
+        n3 <-formant.getPointIndexNearestTime (f, t0 + 2*equi)
+        n4<-formant.getPointIndexNearestTime(f, t0 + 3*equi) 
+        n5 <-formant.getPointIndexNearestTime (f, t0 + 4*equi) 
+        n6 <-formant.getPointIndexNearestTime (f, t0+ 5*equi) 
+        n7 <-formant.getPointIndexNearestTime(f, t0 + 6*equi) 
+        n8 <-formant.getPointIndexNearestTime (f, t0 + 7*equi) 
+        n9 <- formant.getPointIndexNearestTime (f, t0 + 8*equi) 
+        n10 <- formant.getPointIndexNearestTime (f, tf) 
+        primof1 <- f$frame[[n1]]$frequency[1] #adjust the last number for the number of formants you are interested
+        secondof1 <- f$frame[[n2]]$frequency[1]
+        terzof1 <- f$frame[[n3]]$frequency[1]
+        quartof1 <- f$frame[[n4]]$frequency[1]
+        quintof1 <-f$frame[[n5]]$frequency[1]
+        sestof1 <- f$frame[[n6]]$frequency[1]
+        settimof1 <-f$frame[[n7]]$frequency[1]
+        ottavof1 <-f$frame[[n8]]$frequency[1]
+        nonof1 <- f$frame[[n9]]$frequency[1]
+        decimof1 <- f$frame[[n10]]$frequency[1]
+        primof2 <- f$frame[[n1]]$frequency[2]
+        secondof2 <- f$frame[[n2]]$frequency[2]
+        terzof2 <- f$frame[[n3]]$frequency[2]
+        quartof2 <- f$frame[[n4]]$frequency[2]
+        quintof2 <-f$frame[[n5]]$frequency[2]
+        sestof2 <- f$frame[[n6]]$frequency[2]
+        settimof2 <-f$frame[[n7]]$frequency[2]
+        ottavof2 <-f$frame[[n8]]$frequency[2]
+        nonof2 <- f$frame[[n9]]$frequency[2]
+        decimof2 <- f$frame[[n10]]$frequency[2]
+        tabr$variety[I]<-"change"
+        tabr$speaker[I] <-substring(file,1,4)
+        tabr$firstf1[I] <- primof1
+        tabr$secondf1[I] <-secondof1
+        tabr$thirdf1[I] <- terzof1
+        tabr$fourthf1[I] <- quartof1
+        tabr$fifthf1[I] <- quintof1
+        tabr$sixf1[I] <-sestof1
+        tabr$seventhf1[I] <-settimof1
+        tabr$eighthf1[I] <-ottavof1
+        tabr$ninethf1[I] <-nonof1
+        tabr$tenthf1[I]<- decimof1
+        tabr$firstf2[I] <- primof2
+        tabr$secondf2[I] <-secondof2
+        tabr$thirdf2[I] <- terzof2
+        tabr$fourthf2[I] <- quartof2
+        tabr$fifthf2[I] <- quintof2
+        tabr$sixthf2[I] <-sestof2
+        tabr$seventhf2[I] <-settimof2
+        tabr$eighthf2[I] <-ottavof2
+        tabr$ninethf2[I] <-nonof2
+        tabr$tenthf2[I]<- decimof2
+    
+       
+
+  
+          
+       }
+ 
+   
+
+     }
+       
+      
+     }
+print(tabr) #it prints the final table as tabr
+
